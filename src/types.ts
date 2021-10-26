@@ -1,9 +1,15 @@
 import { BigNumber } from './utils/constants'
-import Web3 from 'web3'
-import { FormatInfo, Network } from './schema/types'
+
 import { PromiEvent, TransactionReceipt, TransactionConfig } from 'web3-core'
 
-export { Network, Web3 }
+export enum Network {
+  Main = 'main',
+  Rinkeby = 'rinkeby',
+  Private = 'private',
+  Polygon = 'polygon',
+  Mumbai = 'mumbai'
+}
+
 export type { TransactionConfig, PromiEvent, TransactionReceipt }
 
 export interface ElementAPIConfig {
@@ -313,6 +319,7 @@ export interface Token {
   decimals: number
   address: string
 }
+
 /**
  * Full annotated Fungible Token spec with OpenSea metadata
  */
@@ -343,25 +350,4 @@ export interface ETHSending {
   txHash: string
 }
 
-// (obj: T, web3: any) => Promise<FormatInfo>
-export interface BuyOrderApprove {
-  paymentTokenApprove: {
-    isApprove: boolean
-    func: (tokenAddress: string) => Promise<ETHSending>
-    balances: string
-  }
-  metadata: ExchangeMetadata
-}
-//  isFeeTokenApprove: false
-export interface SellOrderApprove extends BuyOrderApprove {
-  accountRegister: {
-    isApprove: boolean
-    func: () => Promise<ETHSending>
-    proxy: string
-  }
-  sellAssetApprove: {
-    isApprove: boolean
-    func: (metadata: ExchangeMetadata) => Promise<ETHSending>
-    balances: string
-  }
-}
+

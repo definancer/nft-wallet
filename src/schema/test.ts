@@ -1,4 +1,4 @@
-import { ElementSchemaName, makeBigNumber, Network } from '../../index'
+// import { ElementSchemaName, makeBigNumber, Network } from '../../index'
 import { encodeParamsCall, encodeReplacementPattern } from './schemaFunctions'
 import { AnnotatedFunctionABI } from './types'
 import {ContractSchemas} from "../contracts/index"
@@ -8,6 +8,7 @@ const web3 = new Web3()
 
 try {
   const contractSchemas = new ContractSchemas(web3)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const abi = contractSchemas.NftExchangeFunc.presaleBuy({
     address: '0x9F7A946d935c8Efc7A8329C0d894A69bA241345A',

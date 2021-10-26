@@ -16,19 +16,20 @@ import {EventData} from "web3-eth-contract";
     const accounts = new Account(web3)
 
     try {
-        // const res = await accounts.saleLive()
+        const res = await accounts.saleLive()
         // const res = await accounts.getMintInfoEvents()
-        // const res = await accounts.publicBuy("1")
+        console.log(res)
+        const res1 = await accounts.publicBuy("1")
         // const res = await accounts.changePrice()
 
-        const hashAddr =  web3.utils.sha3(account2.address)
-        const web3AccountSignature = await web3.eth.accounts.sign(hashAddr||"", account1.privateKey||"");
-
-        const sig = web3AccountSignature.signature
-        const res = await accounts.presaleBuy(sig)
+        // const hashAddr =  web3.utils.sha3(account2.address)
+        // const web3AccountSignature = await web3.eth.accounts.sign(hashAddr||"", account1.privateKey||"");
+        //
+        // const sig = web3AccountSignature.signature
+        // const res = await accounts.presaleBuy(sig)
 
         //
-        res.txSend.on("confirmation", async (num, tx, error) => {
+        res1.txSend.on("confirmation", async (num, tx, error) => {
             console.log(num)
             // const price = await accounts.pricePerToken()
             // console.log(price)
@@ -36,8 +37,6 @@ import {EventData} from "web3-eth-contract";
             for (const event of events) {
                 console.log(event.blockNumber, event.returnValues)
             }
-            //
-
         })
 
 

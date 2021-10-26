@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie'
 import Web3 from 'web3'
-import {ConnectorNames} from "./connectors";
+import { ConnectorNames } from './connectors'
 
 export const cookiesName = {
   account: 'wallet_account',
   chainId: 'wallet_chainId',
-  walletName: 'wallet_name',
+  walletName: 'wallet_name'
 }
-export const cookiesDomain = 'element.market'
+export const cookiesDomain = '.'
 
 export const setChainIdCookie = (chainId: string): void => {
   Cookies.set(cookiesName.chainId, chainId, { domain: cookiesDomain })
@@ -42,13 +42,14 @@ export const clearWalletNameCookis = (): void => {
 
 
 /* ------------------------判断浏览器是否注册web3，可以是任何钱包的------------------------ */
-export const isWeb3Installed = (): boolean =>(window as any).nftWeb3 && (window as any).nftWeb3.eth
+export const isWeb3Installed = (): boolean => (window as any).nftWeb3 && (window as any).nftWeb3.eth
 
 /* ------------------------判断是否已经连接钱包------------------------ */
 export interface WalletUser {
   account: string
   chainId: string
 }
+
 export const isConnectedWallet = (): WalletUser | undefined => {
   const account = Cookies.get(cookiesName.account)
   const chainId = Cookies.get(cookiesName.chainId)
@@ -66,17 +67,18 @@ export interface WalletCookies {
   walletName: string | undefined
   walletProvider: any
 }
+
 export const getCookiesWallet = (): WalletCookies | false => {
   const account = Cookies.get(cookiesName.account)
   const chainId = Cookies.get(cookiesName.chainId)
   const walletName = Cookies.get(cookiesName.walletName)
   return account && chainId && isWeb3Installed()
     ? {
-        account,
-        chainId,
-        walletName,
-        walletProvider:  (window as any).nftWeb3
-      }
+      account,
+      chainId,
+      walletName,
+      walletProvider: (window as any).nftWeb3
+    }
     : false
 }
 
@@ -85,9 +87,12 @@ export const getCookiesWallet = (): WalletCookies | false => {
 export const setWindowWeb3 = (provider: any, accounts: Array<string>): Web3 => {
   const newWeb3 = new Web3(provider)
   if (accounts.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    newWeb3.eth.defaultAccount = accounts[0].toLowerCase()
-    (window as any).nftWeb3 = newWeb3
+    newWeb3.eth.defaultAccount = accounts[0]
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window['nftWeb3'] = newWeb3
   }
   return newWeb3
 }

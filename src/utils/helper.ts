@@ -1,7 +1,6 @@
 import { BigNumber } from './constants'
-import { Asset, ElementError,  ExchangeMetadata } from '../../index'
-import { Schema } from '../schema/types'
-import { ECSignature, UnhashedOrder, UnsignedOrder } from '../types'
+import {Asset, ECSignature, ExchangeMetadata, UnhashedOrder, UnsignedOrder} from '../types'
+import {ElementError} from "../base/error";
 
 export function toBaseUnitAmount(amount: BigNumber, decimals: number): BigNumber {
   const unit = new BigNumber(10).pow(decimals)
@@ -56,7 +55,7 @@ export async function web3Sign(web3: any, msg: string, account: string): Promise
       throw new ElementError({
         code: '1000',
         message: 'web3.eth.defaultAccount and maker not equal'
-      })
+      });
     }
     return signatureRes
   } catch (error) {

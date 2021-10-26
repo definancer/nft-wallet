@@ -1,6 +1,6 @@
 {
   "name": "@txdev/nft-wallet",
-  "version": "1.0.1",
+  "version": "1.0.8",
   "description": "Javascript SDK for the NFT Market ",
   "main": "lib/index.js",
   "author": "Project NFT Developers",
@@ -11,8 +11,6 @@
   },
   "dependencies": {
     "@types/js-cookie": "^3.0.0",
-    "@walletconnect/client": "^1.6.6",
-    "@walletconnect/web3-provider": "^1.6.6",
     "bignumber.js": "^9.0.1",
     "ethereumjs-util": "^7.1.0",
     "isomorphic-unfetch": "^3.1.0",
@@ -20,15 +18,10 @@
     "web3": "^1.5.2"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.21",
     "@types/node": "^12.12.6",
-    "@types/node-fetch": "^2.5.10",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
     "@typescript-eslint/parser": "^4.29.2",
-    "chai": "^4.3.4",
     "eslint": "^7.32.0",
-    "node-fetch": "^2.6.1",
-    "prettier": "^2.2.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   }

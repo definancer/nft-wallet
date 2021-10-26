@@ -1,6 +1,6 @@
 import {ContractSchemas} from './contracts/index'
+import Web3 from 'web3'
 import {
-    Web3,
     ElementAPIConfig,
     ETHSending,
     ExchangeMetadata,
@@ -23,15 +23,16 @@ export class Account extends ContractSchemas {
     // public ethApi: EthApi
     public buyAccount: string
 
-    constructor(web3: Web3, apiConfig: ElementAPIConfig = {networkName: Network.Rinkeby}) {
+    constructor(web3: Web3, apiConfig?: ElementAPIConfig) {
+        console.log("networkName",Network.Rinkeby)
         super(web3, apiConfig)
-        this.buyAccount = apiConfig.account || web3.eth.defaultAccount?.toLowerCase() || ''
+        this.buyAccount = apiConfig?.account || web3.eth.defaultAccount?.toLowerCase() || ''
     }
 
     // 取消订单
     public async presaleBuy(sig: string): Promise<ETHSending> {
         const to = this.nftExchangeAddr
-        // @ts-ignore
+
         const abi = this.NftExchangeFunc.presaleBuy({
             address: to,
             sig,
@@ -58,6 +59,7 @@ export class Account extends ContractSchemas {
 
     public async publicBuy(qty: string) {
         const to = this.nftExchangeAddr
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const accountApprove = this.NftExchangeFunc.publicBuy({
             address: to,
@@ -72,6 +74,7 @@ export class Account extends ContractSchemas {
 
     public async saleLive() {
         const to = this.nftExchangeAddr
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const accountApprove = {
             "inputs": [],
@@ -92,6 +95,7 @@ export class Account extends ContractSchemas {
 
     public async presaleLive() {
         const to = this.nftExchangeAddr
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const accountApprove = {
             "inputs": [],
@@ -112,6 +116,7 @@ export class Account extends ContractSchemas {
 
     public async pricePerToken() {
         const to = this.nftExchangeAddr
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const abi = {
             "inputs": [],
@@ -132,6 +137,7 @@ export class Account extends ContractSchemas {
 
     public async changePrice() {
         const to = this.nftExchangeAddr
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const abi = {
             "inputs": [
@@ -154,6 +160,7 @@ export class Account extends ContractSchemas {
 
     public async withdrawEarnings() {
         const to = this.nftExchangeAddr
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const abi = {
             "inputs": [],

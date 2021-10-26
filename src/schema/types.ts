@@ -44,13 +44,7 @@ export interface AnnotatedFunctionABI {
 }
 
 //-------
-export enum Network {
-  Main = 'main',
-  Rinkeby = 'rinkeby',
-  Private = 'private',
-  Polygon = 'polygon',
-  Mumbai = 'mumbai'
-}
+
 
 // export enum NetworkID {
 //   Main = '4',
