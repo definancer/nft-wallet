@@ -4,6 +4,7 @@ import { ElementAPIConfig, ETHSending, Network, Token, TransactionConfig } from 
 import { AnnotatedFunctionOutput, LimitedCallSpec } from '../schema/types'
 import { common } from '../schema/schemas'
 import { ElementError } from '../base/error'
+import { abi } from './abi/MaskhumanV2.json'
 
 import unfetch from 'isomorphic-unfetch'
 import { BigNumber } from '../utils/constants'
@@ -68,6 +69,27 @@ export class ContractSchemas {
       throw new Error(`${this.networkName}  abi undefined`)
     }
   }
+
+  public getABI(funcName: string) {
+    return abi.find(val => {
+      return val.name == funcName
+    })
+  }
+
+  public getABIInput(funcName: string,inputs:any) {
+    const abiInput = this.getABI(funcName);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    abiInput.inputs = abiInput.inputs.map((val: any) => {
+      return {
+        "name": val.name,
+        "type": val.type,
+        "value": inputs[val.name]
+      }
+    })
+    return abiInput
+  }
+
 
   public async ethCall(callData: LimitedCallSpec, outputs: AnnotatedFunctionOutput[]): Promise<any> {
     const hexStr = await this.web3.eth.call(callData)
