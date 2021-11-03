@@ -73,7 +73,7 @@ export const onConnectMetaMask = async (ethereum: any): Promise<{ accounts: Arra
     }
     return { accounts, walletChainId }
   } catch (error: any) {
-    // console.error(error)
+    console.error('onConnectMetaMask', error)
     throw error
   }
 }

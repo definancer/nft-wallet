@@ -15,8 +15,8 @@ import {
 import { BigNumber, MAX_UINT_256, NULL_ADDRESS } from './utils/constants'
 import { AnnotatedFunctionABI } from './schema/types'
 import { makeBigNumber } from './utils/helper'
-import { PricePerToken } from './contracts/config'
 import { EventData } from 'web3-eth-contract'
+import { AbiItem } from 'web3-utils'
 
 // 根据 DB签名过的订单 make一个对手单
 export class Account extends ContractSchemas {
@@ -24,32 +24,16 @@ export class Account extends ContractSchemas {
   public buyAccount: string
 
   constructor(web3: Web3, apiConfig?: ElementAPIConfig) {
-    console.log('networkName', Network.Rinkeby)
     super(web3, apiConfig)
     this.buyAccount = apiConfig?.account || web3.eth.defaultAccount?.toLowerCase() || ''
   }
 
-  // 取消订单
   public async presaleBuy(sig: string): Promise<ETHSending> {
     const to = this.nftExchangeAddr
-
     const abi = this.NftExchangeFunc.presaleBuy({
       address: to,
       sig
     })
-    // const abi = {
-    //     "inputs": [
-    //         {
-    //             "name": "sig",
-    //             "type": "bytes",
-    //             "value": sig
-    //         }
-    //     ],
-    //     "name": "presaleBuy",
-    //     "outputs": [],
-    //     "stateMutability": "payable",
-    //     "type": "function"
-    // } as AnnotatedFunctionABI
     const data = encodeParamsCall({ abi })
     const callData = { to, data }
     return this.ethSend(callData, this.buyAccount)
@@ -60,12 +44,12 @@ export class Account extends ContractSchemas {
     const to = this.nftExchangeAddr
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const accountApprove = this.NftExchangeFunc.publicBuy({
-      address: to,
-      qty
-    })
-    const data = encodeParamsCall({ abi: accountApprove })
-    const value = makeBigNumber(qty).times(PricePerToken).toString()
+    const abi = this.getABIInput('publicBuy', { qty }) as AnnotatedFunctionABI
+    const data = encodeParamsCall({ abi })
+
+
+    const price = await this.pricePerToken()
+    const value = makeBigNumber(qty).times(price).toString()
     const callData = { to, data, value }
 
     return this.ethSend(callData, this.buyAccount)
@@ -75,19 +59,8 @@ export class Account extends ContractSchemas {
     const to = this.nftExchangeAddr
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const abi = {
-      'inputs': [],
-      'name': 'saleLive',
-      'outputs': [
-        {
-          'name': '',
-          'type': 'bool'
-        }
-      ],
-      'stateMutability': 'view',
-      'type': 'function'
-    } as AnnotatedFunctionABI
-    const data = encodeParamsCall({ abi: abi })
+    const abi = this.getABI('saleLive') as AnnotatedFunctionABI
+    const data = encodeParamsCall({ abi })
     const callData = { to, data }
     return this.ethCall(callData, abi.outputs)
   }
@@ -96,18 +69,7 @@ export class Account extends ContractSchemas {
     const to = this.nftExchangeAddr
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const abi = {
-      'inputs': [],
-      'name': 'presaleLive',
-      'outputs': [
-        {
-          'name': '',
-          'type': 'bool'
-        }
-      ],
-      'stateMutability': 'view',
-      'type': 'function'
-    } as AnnotatedFunctionABI
+    const abi = this.getABI('presaleLive') as AnnotatedFunctionABI
     const data = encodeParamsCall({ abi: abi })
     const callData = { to, data }
     return this.ethCall(callData, abi.outputs)
@@ -117,18 +79,28 @@ export class Account extends ContractSchemas {
     const to = this.nftExchangeAddr
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const abi = {
-      'inputs': [],
-      'name': 'pricePerToken',
-      'outputs': [
-        {
-          'name': '',
-          'type': 'uint256'
-        }
-      ],
-      'stateMutability': 'view',
-      'type': 'function'
-    } as AnnotatedFunctionABI
+    const abi = this.getABI('pricePerToken') as AnnotatedFunctionABI
+    const data = encodeParamsCall({ abi })
+    const callData = { to, data }
+    return this.ethCall(callData, abi.outputs)
+  }
+
+  public async balanceOf(account?: string): Promise<string> {
+    const owner = account || this.buyAccount
+    const to = this.nftAssetAddr
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const abi = this.getABIInput('balanceOf', { owner }) as AnnotatedFunctionABI
+    const data = encodeParamsCall({ abi })
+    const callData = { to, data }
+    return this.ethCall(callData, abi.outputs)
+  }
+
+  public async totalSupply(account?: string): Promise<string> {
+    const to = this.nftAssetAddr
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const abi = this.getABI('totalSupply') as AnnotatedFunctionABI
     const data = encodeParamsCall({ abi })
     const callData = { to, data }
     return this.ethCall(callData, abi.outputs)
@@ -155,43 +127,34 @@ export class Account extends ContractSchemas {
     return this.ethSend(callData, this.buyAccount)
   }
 
+  public async togglePresaleStatus() {
+    const to = this.nftExchangeAddr
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const abi = this.getABI('togglePresaleStatus') as AnnotatedFunctionABI
+    const data = encodeParamsCall({ abi })
+    const callData = { to, data }
+    return this.ethSend(callData, this.buyAccount)
+  }
+
   public async changePrice(newPrice: string) {
     const to = this.nftExchangeAddr
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const abi = this.getABIInput('changePrice', { newPrice }) as AnnotatedFunctionABI
-
     const data = encodeParamsCall({ abi })
     const callData = { to, data }
     return this.ethSend(callData, this.buyAccount)
   }
 
 
-  public async adminMint(qty:string,to:string) {
+  public async adminMint(qty: string, to: string) {
     const nftExchangeAddr = this.nftExchangeAddr
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const abi = this.getABIInput('changePrice', { qty, to }) as AnnotatedFunctionABI
-    // const abi = {
-    //   'inputs': [
-    //     {
-    //       'name': 'qty',
-    //       'type': 'uint256',
-    //       'value': 2
-    //     },
-    //     {
-    //       'name': 'to',
-    //       'type': 'address',
-    //       'value': address
-    //     }
-    //   ],
-    //   'name': 'adminMint',
-    //   'outputs': [],
-    //   'stateMutability': 'nonpayable',
-    //   'type': 'function'
-    // } as AnnotatedFunctionABI
     const data = encodeParamsCall({ abi })
-    const callData = { to:nftExchangeAddr, data }
+    const callData = { to: nftExchangeAddr, data }
     return this.ethSend(callData, this.buyAccount)
   }
 
@@ -200,27 +163,23 @@ export class Account extends ContractSchemas {
     const to = this.nftExchangeAddr
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const abi = {
-      'inputs': [],
-      'name': 'withdrawEarnings',
-      'outputs': [],
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    } as AnnotatedFunctionABI
+    const abi = this.getABI('withdrawEarnings') as AnnotatedFunctionABI
     const data = encodeParamsCall({ abi })
     const callData = { to, data } as LimitedCallSpec
     return this.ethSend(callData, this.buyAccount)
   }
 
-  public async getMintInfoEvents(): Promise<EventData[]> {
-    const event = this.NftExchangeEvent.transfer
-    const transferContract = new this.web3.eth.Contract(event, this.nftExchangeAddr)
-    const fromBlock = 9527340
-    const toBlock = 'latest'
+  public async getEvents(
+    { name, fromBlock, toBlock = 'latest', filter }
+      : { name: string, fromBlock: string, toBlock?: string, filter?: any }): Promise<EventData[]> {
+    const event = this.getABI(name) as AbiItem
+    const transferContract = new this.web3.eth.Contract([event], this.nftExchangeAddr)
+    // const fromBlock = 9527340
     // filter: {from: ['0x53edE7caE3eB6a7D11429Fe589c0278C9acBE21A']},
-    return await transferContract.getPastEvents(event[0].name, {
+    return await transferContract.getPastEvents(name, {
       fromBlock,
-      toBlock
+      toBlock,
+      filter
     })
   }
 
@@ -243,6 +202,7 @@ export class Account extends ContractSchemas {
     const callData = { to, data }
     return this.ethCall(callData, accountBal?.outputs)
   }
+
 
   public async getAssetBalances(metadata: ExchangeMetadata, account?: string): Promise<string> {
     const owner = account || this.buyAccount

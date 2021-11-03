@@ -41,10 +41,9 @@ export class ContractSchemas {
   public NftExchangeFunc
   public NftExchangeEvent
 
-  constructor(web3: any, apiConfig: ElementAPIConfig = { networkName: Network.Rinkeby }) {
+  constructor(web3: any, apiConfig: ElementAPIConfig = { networkName: Network.Main }) {
 
     const { networkName } = apiConfig
-    console.log('networkName2', networkName)
     this.networkName = networkName
     const contracts = CONTRACTS_ADDRESSES[networkName]
     const exchangeAddr = contracts.NftExchange.toLowerCase()
@@ -76,15 +75,15 @@ export class ContractSchemas {
     })
   }
 
-  public getABIInput(funcName: string,inputs:any) {
-    const abiInput = this.getABI(funcName);
+  public getABIInput(funcName: string, inputs: any) {
+    const abiInput = this.getABI(funcName)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     abiInput.inputs = abiInput.inputs.map((val: any) => {
       return {
-        "name": val.name,
-        "type": val.type,
-        "value": inputs[val.name]
+        'name': val.name,
+        'type': val.type,
+        'value': inputs[val.name]
       }
     })
     return abiInput
@@ -107,7 +106,7 @@ export class ContractSchemas {
       const res = await response.json()
       if (res.code === 200) gasPrice = res.data[GasPrice_NOW.type]
     } else {
-      gasPrice = Number(await this.web3.eth.getGasPrice()) + 10000
+      gasPrice = Number(await this.web3.eth.getGasPrice())
     }
     return gasPrice
   }
@@ -133,6 +132,7 @@ export class ContractSchemas {
       value: callData.value || 0,
       nonce,
       gas,
+      gasPrice:130e4,
       data: callData.data
     } as TransactionConfig
 

@@ -1,35 +1,29 @@
 import Web3 from 'web3'
-import {Account} from '../src/account'
+import { Account } from '../src/account'
 // @ts-ignore
-import secrets from '../../secrets.json';
-import {EventData} from "web3-eth-contract";
+import secrets from '../../secrets.json'
+import { Network } from '../src'
 
 (async () => {
-    const rpcUrl = `https://rinkeby.infura.io/v3/${secrets.infuraKey}`
-    const web3 = new Web3(rpcUrl)
+  const rpcUrl = `https://rinkeby.infura.io/v3/${secrets.infuraKey}`
+  const web3 = new Web3(rpcUrl)
 
-    const account1 = web3.eth.accounts.wallet.add(secrets.accounts['0x0A56b3317eD60dC4E1027A63ffbE9df6fb102401'])
-    const account2 = web3.eth.accounts.wallet.add(secrets.accounts['0xeb1e5B96bFe534090087BEb4FB55CC3C32bF8bAA'])
-    const defaultAddr = account2.address.toLowerCase()
+  const account2 = web3.eth.accounts.wallet.add(secrets.accounts['0xeb1e5B96bFe534090087BEb4FB55CC3C32bF8bAA'])
+  const defaultAddr = account2.address.toLowerCase()
 
-    web3.eth.defaultAccount = defaultAddr
-    const accounts = new Account(web3)
+  web3.eth.defaultAccount = defaultAddr
+  const accounts = new Account(web3,{networkName:Network.Rinkeby})
 
-    try {
-        const res = await accounts.saleLive()
-        console.log(res)
-        const res1 = await accounts.publicBuy("1")
-        res1.txSend.on("confirmation", async (num, tx, error) => {
-            console.log(num)
-            // const price = await accounts.pricePerToken()
-            // console.log(price)
-            const events: Array<EventData> = await accounts.getMintInfoEvents()
-            for (const event of events) {
-                console.log(event.blockNumber, event.returnValues)
-            }
-        })
+  try {
+    const res = await accounts.saleLive()
+    console.log('saleLive', res)
+    // if (!res) return
+    const res1 = await accounts.publicBuy('1')
+    res1.txSend.once('confirmation', async (num, tx, error) => {
+      console.log(num)
+    })
 
-    } catch (e) {
-        console.log(e)
-    }
+  } catch (e) {
+    console.log(e)
+  }
 })()

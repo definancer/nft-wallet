@@ -1,6 +1,6 @@
 {
   "name": "@txdev/nft-wallet",
-  "version": "1.1.1",
+  "version": "1.1.5",
   "description": "Javascript SDK for the NFT Market ",
   "main": "lib/index.js",
   "author": "Project NFT Developers",

@@ -9,7 +9,6 @@ import { EventData } from 'web3-eth-contract'
   const web3 = new Web3(rpcUrl)
 
   const account1 = web3.eth.accounts.wallet.add(secrets.accounts['0x0A56b3317eD60dC4E1027A63ffbE9df6fb102401'])
-  // const account2 = web3.eth.accounts.wallet.add(secrets.accounts['0xeb1e5B96bFe534090087BEb4FB55CC3C32bF8bAA'])
   const defaultAddr = account1.address.toLowerCase()
 
   web3.eth.defaultAccount = defaultAddr
@@ -17,14 +16,13 @@ import { EventData } from 'web3-eth-contract'
 
   try {
     const res = await accounts.saleLive()
-    console.log(res)
-    // const res1 = await accounts.adminMint('0x7335Bae9c88c59382621A2FBE08A353a93510F56')
-
-    const res1 = await accounts.changePrice('1000')
-
-    res1.txSend.on('confirmation', async (num, tx, error) => {
+    console.log('saleLive', res)
+    if (res) return
+    const res1 = await accounts.toggleSaleStatus()
+    res1.txSend.once('confirmation', async (num, tx, error) => {
       console.log(num)
     })
+
   } catch (e) {
     console.log(e)
   }
