@@ -12,10 +12,10 @@ import { Network } from '../src'
   const mint = web3.eth.accounts.wallet.add(secrets.accounts['0xeb1e5B96bFe534090087BEb4FB55CC3C32bF8bAA'])
   const signer = web3.eth.accounts.wallet.add(secrets.accounts['0x0A56b3317eD60dC4E1027A63ffbE9df6fb102401'])
 
-  const defaultAddr = mint.address.toLowerCase()
+  const defaultAddr = signer.address.toLowerCase()
 
   web3.eth.defaultAccount = defaultAddr
-  const accounts = new Exchange(web3,{networkName:Network.Rinkeby})
+  const accounts = new Exchange(web3, { networkName: Network.Rinkeby })
 
   try {
     const isPresaleLive = await accounts.presaleLive()
@@ -25,20 +25,18 @@ import { Network } from '../src'
 
     const hashAddr = web3.utils.sha3(mint.address)
     const web3AccountSignature = web3.eth.accounts.sign(hashAddr || '', signer.privateKey || '')
+    console.log(web3AccountSignature)
 
-    const sig = web3AccountSignature.signature
+    const ethSign =await web3.eth.sign(hashAddr || '', signer.address)
+
+    console.log(ethSign)
+
+    // const sig = web3AccountSignature.signature
     // const sig = "0x5f429f23eed6670e4266c330d90b165967cfda1919d8ba4dbc4c310d22fac57f427d833fb9c6f983eaa4794a822539d907062319ef648acddbd5428f606b83351c"
 
-    const isBuy = await accounts.checkSignature(mint.address, sig)
-    console.log('checkSignature', isBuy)
-    if (!isBuy) return
-    const res1 = await accounts.presaleBuy(sig)
 
-    console.log('res1.txSend',res1.txHash)
-    res1.txSend.once('confirmation', async (num, tx, error) => {
-      console.log(num)
 
-    })
+
   } catch (e) {
     console.log(e)
   }

@@ -1,16 +1,17 @@
 import Web3 from 'web3'
-import { Account } from '../../src/account'
+import { Asset } from '../../src/asset'
 import { writeCsv } from '../../src/utils/csv'
 import secrets from '../../../secrets.json'
+import { Network } from '../../src'
 
 
 (async () => {
   const rpcUrl = `https://rinkeby.infura.io/v3/${secrets.infuraKey}`
   const web3 = new Web3(rpcUrl)
-  const accounts = new Account(web3)
+  const accounts = new Asset(web3,{networkName:Network.Rinkeby})
 
   try {
-    const logs = await accounts.getEvents({ name: 'MintInfo', fromBlock: '9527340' })
+    const logs = await accounts.getEvents({ name: 'MintInfo', fromBlock: '9577048' })
     const logCsv = logs.map(val => {
       return {
         blockNumber: val.blockNumber,

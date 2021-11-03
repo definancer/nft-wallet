@@ -1,4 +1,4 @@
-import { BigNumber } from './utils/constants'
+import { BigNumber } from './utils/helper'
 
 import { PromiEvent, TransactionReceipt, TransactionConfig } from 'web3-core'
 

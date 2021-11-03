@@ -2,13 +2,7 @@ import { isMetamaskLock, onConnectMetaMask } from './connectors/metaMask'
 import { cookiesName, setWindowWeb3 } from './helper'
 import { ConnectorNames } from './connectors'
 import Web3 from 'web3'
-import {  CONTRACTS_ADDRESSES, RPC_PROVIDER } from '../contracts/config'
-import { abi } from '../contracts/abi/MaskhumanV2.json'
-
-
 import Cookies from 'js-cookie'
-import { AbiItem } from 'web3-utils'
-import { ElementAPIConfig, Network } from '../types'
 
 export class Wallet {
   public walletName: ConnectorNames | undefined
@@ -40,13 +34,6 @@ export class Wallet {
       Cookies.set(cookiesName.walletName, ConnectorNames.TokenPocket)
       console.log('TokenPocket APP')
     }
-  }
-
-  static nftAssetsCall(apiConfig: ElementAPIConfig = { networkName: Network.Main }) {
-    const networkName = apiConfig.networkName
-    const web3 = new Web3(RPC_PROVIDER[networkName])
-    const abiInterface = abi as AbiItem[]
-    return new web3.eth.Contract(abiInterface, CONTRACTS_ADDRESSES[networkName].NftAsset)
   }
 
   async connectWallet(): Promise<Web3 | undefined> {

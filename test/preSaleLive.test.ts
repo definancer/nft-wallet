@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import { Account } from '../src/account'
+import { Exchange } from '../src/exchange'
 // @ts-ignore
 import secrets from '../../secrets.json'
 import { EventData } from 'web3-eth-contract'
@@ -15,7 +15,7 @@ import { EventData } from 'web3-eth-contract'
   const defaultAddr = account1.address.toLowerCase()
 
   web3.eth.defaultAccount = defaultAddr
-  const accounts = new Account(web3)
+  const accounts = new Exchange(web3)
 
   try {
     const res = await accounts.presaleLive()

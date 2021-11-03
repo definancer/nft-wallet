@@ -22,7 +22,8 @@ export enum RINKEBY_CONTRACTS_ADDRESSES {
 export enum MAIN_CONTRACTS_ADDRESSES {
   NftExchange = '0x6d77496b7c143d183157e8b979e47a0a0180e86b',
   NftAsset = '0x6d77496b7c143d183157e8b979e47a0a0180e86b',
-  WETH = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+  WETH = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  MarketExchange =''
 }
 
 export const CONTRACTS_ADDRESSES: { [key: string]: any } = {

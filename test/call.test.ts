@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import { Account } from '../src/account'
+import { Asset } from '../src/asset'
 // @ts-ignore
 import secrets from '../../secrets.json'
 import { Network } from '../src'
@@ -13,11 +13,11 @@ import { Network } from '../src'
   const defaultAddr = account1.address.toLowerCase()
 
   web3.eth.defaultAccount = defaultAddr
-  const accounts = new Account(web3,{networkName:Network.Rinkeby})
+  const accounts = new Asset(web3,{networkName:Network.Rinkeby})
 
   try {
 
-    const balanceOf = await accounts.balanceOf();
+      const block = await accounts.getGas1559Price(defaultAddr);
 
     const totalSupply = await accounts.totalSupply();
 
